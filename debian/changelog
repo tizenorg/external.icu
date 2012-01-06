@@ -1,0 +1,7 @@
+icu (4.8-1slp6) unstable; urgency=low
+
+  * Initial Release.
+  * Git: pkgs/i/icu 
+  * Tag: icu_4.8-1slp6
+ 
+ -- Seokkyu Jang <seokkyu.jang@samsung.com>  Wed, 07 Dec 2011 12:58:04 +0900
