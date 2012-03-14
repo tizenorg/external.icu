@@ -1,11 +1,11 @@
 Name:      icu
 Version:   4.8.1
-Release:   1
+Release:   2.65
 Summary:   International Components for Unicode
 Group:     Development/Tools
 License:   MIT
 URL:       http://www.icu-project.org/
-Source0:   http://download.icu-project.org/files/icu4c/4.6.1/icu4c-4_8_1-src.tgz
+Source0:   http://download.icu-project.org/files/icu4c/4.8.1/icu4c-4_8_1-src.tgz
 Patch0:    hack-atomics.diff
 BuildRequires: doxygen, autoconf
 Requires: lib%{name} = %{version}-%{release}
@@ -50,7 +50,7 @@ autoconf
 make # %{?_smp_mflags} # -j(X>1) may "break" man pages as of 3.2, b.f.u #2357
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT __docs
 make install DESTDIR=$RPM_BUILD_ROOT
 chmod +x $RPM_BUILD_ROOT%{_libdir}/*.so.*
 rm -rf $RPM_BUILD_ROOT/usr/share/man
