@@ -1,14 +1,13 @@
 Name:      icu
-Version:   4.8.1
-Release:   2.65
+Version:   4.8
+Release:   1
 Summary:   International Components for Unicode
 Group:     Development/Tools
-License:   MIT
+License:   ICU
 URL:       http://www.icu-project.org/
-Source0:   http://download.icu-project.org/files/icu4c/4.8.1/icu4c-4_8_1-src.tgz
+Source0:   %{name}-%{version}.tar.gz
 Patch0:    hack-atomics.diff
 BuildRequires: doxygen, autoconf
-Requires: lib%{name} = %{version}-%{release}
 
 %description
 Tools and utilities for developing with icu.
@@ -34,27 +33,26 @@ Summary:  Development files for International Components for Unicode
 Group:    Development/Libraries
 Requires: lib%{name} = %{version}-%{release}
 Requires: pkgconfig
-Requires: %{name} = %{version}-%{release}
 
 %description -n lib%{name}-devel
 Includes and definitions for developing with icu.
 
 %prep
-%setup -q -n %{name}
+%setup -q
 %patch0 -p1
 
 %build
-autoconf
-%configure --with-data-packaging=library --disable-samples --disable-renaming
-#sed -i -- "s/-nodefaultlibs -nostdlib//" config/mh-linux
+%reconfigure ./runConfigureICU Linux --disable-renaming --prefix=%{_prefix}
+
 make # %{?_smp_mflags} # -j(X>1) may "break" man pages as of 3.2, b.f.u #2357
 
 %install
-rm -rf $RPM_BUILD_ROOT __docs
-make install DESTDIR=$RPM_BUILD_ROOT
-chmod +x $RPM_BUILD_ROOT%{_libdir}/*.so.*
-rm -rf $RPM_BUILD_ROOT/usr/share/man
-rm -f $RPM_BUILD_ROOT/usr/share/icu/%{version}/license.html
+make DESTDIR=%{buildroot} install
+
+# bugs of rpmdeps
+chmod +x %{buildroot}/%{_libdir}/lib*.so.*
+
+%remove_docs
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -64,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 %postun -n lib%{name} -p /sbin/ldconfig
 
 %files
+
+%files -n lib%{name}
+%{_libdir}/*.so.*
 %{_bindir}/derb
 %{_bindir}/genbrk
 %{_bindir}/gencfu
@@ -74,21 +75,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/pkgdata
 %{_bindir}/uconv
 %{_bindir}/icuinfo
+%{_bindir}/icu-config
 %{_sbindir}/*
-
-%files -n lib%{name}
-%{_libdir}/*.so.*
+%dir /usr/share/icu/4.8.1
+/usr/share/icu/4.8.1/config/mh-linux
+/usr/share/icu/4.8.1/install-sh
+/usr/share/icu/4.8.1/license.html
+/usr/share/icu/4.8.1/mkinstalldirs
 
 %files -n lib%{name}-devel
-%{_bindir}/icu-config
 %{_includedir}/layout
 %{_includedir}/unicode
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/icu-*.pc
 %{_libdir}/%{name}
-%dir %{_datadir}/%{name}
-%dir %{_datadir}/%{name}/%{version}
-%{_datadir}/%{name}/%{version}/install-sh
-%{_datadir}/%{name}/%{version}/mkinstalldirs
-%{_datadir}/%{name}/%{version}/config
-
