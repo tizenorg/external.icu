@@ -39,7 +39,7 @@ Includes and definitions for developing with icu.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch0 -p2
 
 %build
 %reconfigure ./runConfigureICU Linux --disable-renaming --prefix=%{_prefix}
