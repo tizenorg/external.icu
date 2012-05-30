@@ -6,6 +6,7 @@ Group:     Development/Tools
 License:   ICU
 URL:       http://www.icu-project.org/
 Source0:   %{name}-%{version}.tar.gz
+Source1001: packaging/icu.manifest 
 Patch0:    hack-atomics.diff
 BuildRequires: doxygen, autoconf
 
@@ -42,6 +43,7 @@ Includes and definitions for developing with icu.
 %patch0 -p2
 
 %build
+cp %{SOURCE1001} .
 %reconfigure ./runConfigureICU Linux --disable-renaming --prefix=%{_prefix}
 
 make # %{?_smp_mflags} # -j(X>1) may "break" man pages as of 3.2, b.f.u #2357
@@ -62,8 +64,10 @@ rm -rf $RPM_BUILD_ROOT
 %postun -n lib%{name} -p /sbin/ldconfig
 
 %files
+%manifest icu.manifest
 
 %files -n lib%{name}
+%manifest icu.manifest
 %{_libdir}/*.so.*
 %{_bindir}/derb
 %{_bindir}/genbrk
@@ -84,6 +88,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/icu/4.8.1/mkinstalldirs
 
 %files -n lib%{name}-devel
+%manifest icu.manifest
 %{_includedir}/layout
 %{_includedir}/unicode
 %{_libdir}/*.so
