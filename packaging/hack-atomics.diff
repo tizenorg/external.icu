@@ -1,42 +1,11 @@
-3b1de280a4acb348b7d704ce568c4d82af112a13
 diff --git a/configure.in b/configure.in
-index 107912b..d9302de 100644
---- a/source/configure.in
-+++ b/source/configure.in
-@@ -808,21 +808,22 @@ AC_SUBST(U_HAVE_PLACEMENT_NEW)
- 
- # gcc atomic built-in functions check
- # AC_TRY_LINK([], [int foo, bar; bar = __sync_val_compare_and_swap(&foo, 0, 1);],, 
--AC_LANG(C)
--AC_MSG_CHECKING([for gcc atomic functions])
--AC_LINK_IFELSE([AC_LANG_PROGRAM(
--    [[
--        void *p;
--        int   i;
--    ]],
--    [[
--        __sync_fetch_and_add(&i, 1);
--        __sync_fetch_and_sub(&i, 1);
--        __sync_val_compare_and_swap(&p, 0, 0);
--    ]]
--)],
--[U_HAVE_GCC_ATOMICS=1; AC_MSG_RESULT([yes])],
--[U_HAVE_GCC_ATOMICS=0; AC_MSG_RESULT([no])])
-+dnl AC_LANG(C)
-+dnl AC_MSG_CHECKING([for gcc atomic functions])
-+dnl AC_LINK_IFELSE([AC_LANG_PROGRAM(
-+dnl     [[
-+dnl         void *p;
-+dnl         int   i;
-+dnl     ]],
-+dnl     [[
-+dnl         __sync_fetch_and_add(&i, 1);
-+dnl         __sync_fetch_and_sub(&i, 1);
-+dnl         __sync_val_compare_and_swap(&p, 0, 0);
-+dnl     ]]
-+dnl )],
-+dnl [U_HAVE_GCC_ATOMICS=1; AC_MSG_RESULT([yes])],
-+dnl [U_HAVE_GCC_ATOMICS=0; AC_MSG_RESULT([no])])
+index 107912b..aad44c8 100644
+--- a/configure.in
++++ b/configure.in
+@@ -823,6 +823,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM(
+ )],
+ [U_HAVE_GCC_ATOMICS=1; AC_MSG_RESULT([yes])],
+ [U_HAVE_GCC_ATOMICS=0; AC_MSG_RESULT([no])])
 +U_HAVE_GCC_ATOMICS=0
  AC_SUBST(U_HAVE_GCC_ATOMICS)
  

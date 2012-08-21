@@ -64,7 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 
 %files -n lib%{name}
-%{_libdir}/*.so.*
+%{_libdir}/*.so*
 %{_bindir}/derb
 %{_bindir}/genbrk
 %{_bindir}/gencfu
