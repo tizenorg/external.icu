@@ -1,0 +1,12 @@
+diff --git a/configure.in b/configure.in
+index 107912b..aad44c8 100644
+--- a/configure.in
++++ b/configure.in
+@@ -823,6 +823,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM(
+ )],
+ [U_HAVE_GCC_ATOMICS=1; AC_MSG_RESULT([yes])],
+ [U_HAVE_GCC_ATOMICS=0; AC_MSG_RESULT([no])])
++U_HAVE_GCC_ATOMICS=0
+ AC_SUBST(U_HAVE_GCC_ATOMICS)
+ 
+ AC_LANG(C)
