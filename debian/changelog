@@ -1,3 +1,11 @@
+icu (4.8-1slp13) unstable; urgency=low
+
+  * icu resource update
+  * Git : external/icu
+  * Tag : icu_4.8-1slp13
+
+ -- Heeyoung Shin <shy81.shin@samsung.com>  Fri, 26 Dec 2012 20:30:59 +0900
+
 icu (4.8-1slp12) unstable; urgency=low
 
   * icu resource update
