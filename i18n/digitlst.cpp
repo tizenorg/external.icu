@@ -741,6 +741,14 @@ DigitList::set(double source)
     sprintf(rep, "%+1.*e", MAX_DBL_DIGITS - 1, source);
     U_ASSERT(uprv_strlen(rep) < sizeof(rep));
 
+    // uprv_decNumberFromString() will parse the string expecting '.' as a
+    // decimal separator, however sprintf() can use ',' in certain locales.
+    // Overwrite a ',' with '.' here before proceeding.
+    char *decimalSeparator = strchr(rep, ',');
+    if (decimalSeparator != NULL) {
+        *decimalSeparator = '.';
+    }
+
     // Create a decNumber from the string.
     uprv_decNumberFromString(fDecNumber, rep, &fContext);
     uprv_decNumberTrim(fDecNumber);
