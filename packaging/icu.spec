@@ -48,6 +48,8 @@ make # %{?_smp_mflags} # -j(X>1) may "break" man pages as of 3.2, b.f.u #2357
 
 %install
 make DESTDIR=%{buildroot} install
+mkdir -p %{buildroot}/usr/share/license
+cp LICENSE %{buildroot}/usr/share/license/%{name}
 
 # bugs of rpmdeps
 chmod +x %{buildroot}/%{_libdir}/lib*.so.*
@@ -62,6 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %postun -n lib%{name} -p /sbin/ldconfig
 
 %files
+/usr/share/license/%{name}
 
 %files -n lib%{name}
 %{_libdir}/*.so*
