@@ -89,22 +89,22 @@ az{
             dayNames{
                 format{
                     abbreviated{
-                        "B.",
-                        "B.E.",
+                        "Baz",
+                        "B.e",
                         "Ç.A.",
-                        "Ç.",
+                        "Çərş.",
                         "C.A.",
-                        "C",
-                        "Ş.",
+                        "Cümə",
+                        "Şən",
                     }
                     wide{
-                        "bazar",
-                        "bazar ertəsi",
-                        "çərşənbə axşamı",
-                        "çərşənbə",
-                        "cümə axşamı",
-                        "cümə",
-                        "şənbə",
+                        "Bazar günü ",
+                        "Bazar ertəsi",
+                        "Çərşənbə axşamı",
+                        "Çərşənbə",
+                        "Cümə axşamı",
+                        "Cümə",
+                        "Şənbə",
                     }
                 }
                 stand-alone{

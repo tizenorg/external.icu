@@ -381,6 +381,7 @@
 		<include locales="ksf_CM"/>
 		<include locales="kw"/>
 		<include locales="kw_GB"/>
+		<include locales="ky"/>
 		<include locales="lag"/>
 		<include locales="lag_TZ"/>
 		<include locales="lg"/>
@@ -586,11 +587,13 @@
 		<include locales="teo"/>
 		<include locales="teo_KE"/>
 		<include locales="teo_UG"/>
+		<include locales="tg"/>
 		<include locales="th"/>
 		<include locales="th_TH"/>
 		<include locales="ti"/>
 		<include locales="ti_ER"/>
 		<include locales="ti_ET"/>
+		<include locales="tk"/>
 		<include locales="tl"/>
 		<include locales="tl_PH"/>
 		<include locales="to"/>

@@ -683,7 +683,7 @@ extern U_IMPORT char *U_TZNAME[];
 #define TZZONEINFO      "/usr/share/lib/zoneinfo/"
 #define TZ_ENV_CHECK    "localtime"
 #else
-#define TZDEFAULT       "/etc/localtime"
+#define TZDEFAULT       "/opt/etc/localtime"
 #define TZZONEINFO      "/usr/share/zoneinfo/"
 #endif
 #if U_HAVE_DIRENT_H
@@ -1026,6 +1026,11 @@ uprv_tzname(int n)
 
 #if defined(CHECK_LOCALTIME_LINK) && !defined(DEBUG_SKIP_LOCALTIME_LINK)
     /* Caller must handle threading issues */
+
+    /* for update timezone when real timezone is changed	*/
+    /* modified by sunyeop.hwang@20140321			*/
+    gTimeZoneBufferPtr = NULL;
+
     if (gTimeZoneBufferPtr == NULL) {
         /*
         This is a trick to look at the name of the link to get the Olson ID

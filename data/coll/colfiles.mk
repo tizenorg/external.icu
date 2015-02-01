@@ -115,7 +115,7 @@ COLLATION_SOURCE = $(COLLATION_EMPTY_SOURCE) af.txt ar.txt as.txt az.txt\
  fr_CA.txt gu.txt ha.txt haw.txt he.txt\
  hi.txt hr.txt hu.txt hy.txt ig.txt\
  is.txt ja.txt kk.txt kl.txt km.txt\
- kn.txt ko.txt kok.txt ln.txt lt.txt\
+ kn.txt ko.txt kok.txt ky.txt ln.txt lt.txt\
  lv.txt mk.txt ml.txt mr.txt mt.txt\
  my.txt nb.txt nn.txt om.txt or.txt\
  pa.txt pl.txt ps.txt ro.txt ru.txt\

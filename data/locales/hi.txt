@@ -321,8 +321,8 @@ hi{
         }
         gregorian{
             AmPmMarkers{
-                "am",
-                "pm",
+                "AM",
+                "PM",
             }
             DateTimePatterns{
                 "h:mm:ss a zzzz",
@@ -379,13 +379,13 @@ hi{
             dayNames{
                 format{
                     abbreviated{
-                        "रवि",
-                        "सोम",
-                        "मंगल",
-                        "बुध",
-                        "गुरु",
-                        "शुक्र",
-                        "शनि",
+                        "रवि",
+                        "सोम",
+                        "मंगल",
+                        "बुध",
+                        "गुरु",
+                        "शुक्र",
+                        "शनि",
                     }
                     short{
                         "र",

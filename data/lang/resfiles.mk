@@ -71,7 +71,7 @@ LANG_SOURCE = af.txt agq.txt ak.txt am.txt\
  khq.txt ki.txt kk.txt kk_Cyrl.txt kl.txt\
  kln.txt km.txt kn.txt ko.txt kok.txt\
  ks.txt ks_Arab.txt ksb.txt ksf.txt kw.txt\
- lag.txt lg.txt ln.txt lo.txt lt.txt\
+ ky.txt lag.txt lg.txt ln.txt lo.txt lt.txt\
  lu.txt luo.txt luy.txt lv.txt mas.txt\
  mer.txt mfe.txt mg.txt mgh.txt mgo.txt\
  mk.txt ml.txt mn.txt mn_Cyrl.txt mr.txt\

@@ -116,7 +116,7 @@ GENRB_SOURCE = af.txt af_NA.txt af_ZA.txt agq.txt\
  km_KH.txt kn.txt kn_IN.txt ko.txt ko_KP.txt\
  ko_KR.txt kok.txt kok_IN.txt ks.txt ks_Arab.txt\
  ks_Arab_IN.txt ksb.txt ksb_TZ.txt ksf.txt ksf_CM.txt\
- kw.txt kw_GB.txt lag.txt lag_TZ.txt lg.txt\
+ kw.txt kw_GB.txt ky.txt lag.txt lag_TZ.txt lg.txt\
  lg_UG.txt ln.txt ln_AO.txt ln_CD.txt ln_CF.txt\
  ln_CG.txt lo.txt lo_LA.txt lt.txt lt_LT.txt\
  lu.txt lu_CD.txt luo.txt luo_KE.txt luy.txt\
@@ -152,8 +152,8 @@ GENRB_SOURCE = af.txt af_NA.txt af_ZA.txt agq.txt\
  sv_AX.txt sv_FI.txt sv_SE.txt sw.txt sw_KE.txt\
  sw_TZ.txt sw_UG.txt swc.txt swc_CD.txt ta.txt\
  ta_IN.txt ta_LK.txt ta_MY.txt ta_SG.txt te.txt\
- te_IN.txt teo.txt teo_KE.txt teo_UG.txt th.txt\
- th_TH.txt ti.txt ti_ER.txt ti_ET.txt to.txt\
+ te_IN.txt teo.txt teo_KE.txt teo_UG.txt tg.txt th.txt\
+ th_TH.txt ti.txt ti_ER.txt ti_ET.txt tk.txt to.txt\
  to_TO.txt tr.txt tr_CY.txt tr_TR.txt twq.txt\
  twq_NE.txt tzm.txt tzm_Latn.txt tzm_Latn_MA.txt uk.txt\
  uk_UA.txt ur.txt ur_IN.txt ur_PK.txt uz.txt\

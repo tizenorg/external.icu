@@ -91,7 +91,7 @@ CURR_SOURCE = af.txt af_NA.txt agq.txt ak.txt\
  kea.txt khq.txt ki.txt kk.txt kk_Cyrl.txt\
  kl.txt kln.txt km.txt kn.txt ko.txt\
  kok.txt ks.txt ks_Arab.txt ksb.txt ksf.txt\
- kw.txt lag.txt lg.txt ln.txt ln_AO.txt\
+ kw.txt ky.txt lag.txt lg.txt ln.txt ln_AO.txt\
  lo.txt lt.txt lu.txt luo.txt luy.txt\
  lv.txt mas.txt mas_TZ.txt mer.txt mfe.txt\
  mg.txt mgh.txt mgo.txt mk.txt ml.txt\
