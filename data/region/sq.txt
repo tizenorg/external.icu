@@ -1,9 +1,9 @@
 ﻿// ***************************************************************************
 // *
-// * Copyright (C) 2011 International Business Machines
-// * Corporation and others.  All Rights Reserved.
-// * Tool: com.ibm.icu.dev.tool.cldr.LDML2ICUConverter.java
-// * Source File:<path>/common/main/sq.xml
+// * Copyright (C) 2013 International Business Machines
+// * Corporation and others. All Rights Reserved.
+// * Tool: org.unicode.cldr.icu.NewLdml2IcuConverter
+// * Source File: <path>/common/main/sq.xml
 // *
 // ***************************************************************************
 /**
@@ -43,7 +43,6 @@ sq{
         CN{"Kinë"}
         CO{"Kolumbi"}
         CR{"Kosta Rika"}
-        CS{"Serbië en Montenegro"}
         CU{"Kubë"}
         CV{"Kap Verde"}
         CY{"Qipro"}
@@ -163,11 +162,12 @@ sq{
         VA{"Vatikan"}
         VC{"Saint Vincent e Grenadinet"}
         VE{"Venezuelë"}
+        XK{"Kosovë"}
         YE{"Jemen"}
         ZA{"Afrika e Jugut"}
         ZM{"Zambi"}
         ZW{"Zimbabve"}
         ZZ{"Rajon i panjohur"}
     }
-    Version{"2.0.59.32"}
+    Version{"2.0.82.45"}
 }

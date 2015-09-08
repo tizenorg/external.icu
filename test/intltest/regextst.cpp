@@ -1,6 +1,6 @@
 /********************************************************************
  * COPYRIGHT:
- * Copyright (c) 2002-2011, International Business Machines Corporation and
+ * Copyright (c) 2002-2012, International Business Machines Corporation and
  * others. All Rights Reserved.
  ********************************************************************/
 
@@ -10,12 +10,23 @@
 //      ICU Regular Expressions test, part of intltest.
 //
 
+/*
+     NOTE!!
+
+     PLEASE be careful about ASCII assumptions in this test.
+     This test is one of the worst repeat offenders.
+     If you have questions, contact someone on the ICU PMC
+     who has access to an EBCDIC system.
+
+ */
+
 #include "intltest.h"
 #if !UCONFIG_NO_REGULAR_EXPRESSIONS
 
 #include "unicode/regex.h"
 #include "unicode/uchar.h"
 #include "unicode/ucnv.h"
+#include "unicode/uniset.h"
 #include "unicode/ustring.h"
 #include "regextst.h"
 #include "uvector.h"
@@ -114,11 +125,18 @@ void RegexTest::runIndexedTest( int32_t index, UBool exec, const char* &name, ch
         case 19: name = "Bug 7029";
             if (exec) Bug7029();
             break;
+        case 20: name = "CheckInvBufSize";
+            if (exec) CheckInvBufSize();
+            break;
+        case 21: name = "Bug 9283";
+            if (exec) Bug9283();
+            break;
 
         default: name = "";
             break; //needed to end loop
     }
 }
+
 
 
 /**
@@ -127,18 +145,6 @@ void RegexTest::runIndexedTest( int32_t index, UBool exec, const char* &name, ch
  * @see utext_openUTF8
  */
 static UText* regextst_openUTF8FromInvariant(UText* ut, const char *inv, int64_t length, UErrorCode *status);
-
-static UText* regextst_openUTF8FromInvariant(UText *ut, const char *inv, int64_t length, UErrorCode *status) {
-#if U_CHARSET_FAMILY==U_ASCII_FAMILY
-  return utext_openUTF8(ut, inv, length, status);
-#else
-  char buf[1024];
-
-  uprv_aestrncpy((uint8_t*)buf, (const uint8_t*)inv, length);
-  
-  return utext_openUTF8(ut, buf, length, status);
-#endif
-}
 
 //---------------------------------------------------------------------------
 //
@@ -175,6 +181,33 @@ static void utextToPrintable(char *buf, int32_t bufLen, UText *text) {
   utext_setNativeIndex(text, oldIndex);
 }
 
+
+static char ASSERT_BUF[1024];
+
+const char* RegexTest::extractToAssertBuf(const UnicodeString& message) {
+  if(message.length()==0) {
+    strcpy(ASSERT_BUF, "[[empty UnicodeString]]");
+  } else {
+    UnicodeString buf;
+    IntlTest::prettify(message,buf);
+    if(buf.length()==0) {
+      strcpy(ASSERT_BUF, "[[escape() returned 0 chars]]");
+    } else {
+      buf.extract(0, 0x7FFFFFFF, ASSERT_BUF, sizeof(ASSERT_BUF)-1);
+      if(ASSERT_BUF[0]==0) {
+        ASSERT_BUF[0]=0;
+        for(int32_t i=0;i<buf.length();i++) {
+          UChar ch = buf[i];
+          sprintf(ASSERT_BUF+strlen(ASSERT_BUF),"\\u%02x",ch);
+        }
+      }
+    }
+  }
+  ASSERT_BUF[sizeof(ASSERT_BUF)-1] = 0;
+  return ASSERT_BUF;
+}
+
+
 #define REGEX_VERBOSE_TEXT(text) {char buf[200];utextToPrintable(buf,sizeof(buf)/sizeof(buf[0]),text);logln("%s:%d: UText %s=\"%s\"", __FILE__, __LINE__, #text, buf);}
 
 #define REGEX_CHECK_STATUS {if (U_FAILURE(status)) {dataerrln("%s:%d: RegexTest failure.  status=%s", \
@@ -192,6 +225,25 @@ if (status!=errcode) {dataerrln("RegexTest failure at line %d.  Expected status=
 #define REGEX_ASSERT_L(expr, line) {if ((expr)==FALSE) { \
     errln("RegexTest failure at line %d, from %d.", __LINE__, (line)); return;}}
 
+#define REGEX_ASSERT_UNISTR(ustr,inv) {if (!(ustr==inv)) {errln("%s:%d: RegexTest failure: REGEX_ASSERT_UNISTR(%s,%s) failed \n", __FILE__, __LINE__, extractToAssertBuf(ustr),inv);};}
+
+
+static UBool testUTextEqual(UText *uta, UText *utb) {
+    UChar32 ca = 0;
+    UChar32 cb = 0;
+    utext_setNativeIndex(uta, 0);
+    utext_setNativeIndex(utb, 0);
+    do {
+        ca = utext_next32(uta);
+        cb = utext_next32(utb);
+        if (ca != cb) {
+            break;
+        }
+    } while (ca != U_SENTINEL);
+    return ca == cb;
+}
+
+
 /**
  * @param expected expected text in UTF-8 (not platform) codepage
  */
@@ -208,7 +260,7 @@ void RegexTest::assertUText(const char *expected, UText *actual, const char *fil
       return;
     }
     utext_setNativeIndex(actual, 0);
-    if (utext_compare(&expectedText, -1, actual, -1) != 0) {
+    if (!testUTextEqual(&expectedText, actual)) {
         char buf[201 /*21*/];
         char expectedBuf[201];
         utextToPrintable(buf, sizeof(buf)/sizeof(buf[0]), actual);
@@ -230,7 +282,7 @@ void RegexTest::assertUTextInvariant(const char *expected, UText *actual, const 
       return;
     }
     utext_setNativeIndex(actual, 0);
-    if (utext_compare(&expectedText, -1, actual, -1) != 0) {
+    if (!testUTextEqual(&expectedText, actual)) {
         char buf[201 /*21*/];
         char expectedBuf[201];
         utextToPrintable(buf, sizeof(buf)/sizeof(buf[0]), actual);
@@ -248,6 +300,45 @@ void RegexTest::assertUTextInvariant(const char *expected, UText *actual, const 
  * Assumes Invariant input 
  */
 #define REGEX_ASSERT_UTEXT_INVARIANT(expected, actual) assertUTextInvariant((expected), (actual), __FILE__, __LINE__)
+
+/**
+ * This buffer ( inv_buf ) is used to hold the UTF-8 strings
+ * passed into utext_openUTF8. An error will be given if
+ * INV_BUFSIZ is too small.  It's only used on EBCDIC systems.
+ */ 
+
+#define INV_BUFSIZ 2048 /* increase this if too small */
+
+static int64_t inv_next=0;
+
+#if U_CHARSET_FAMILY!=U_ASCII_FAMILY
+static char inv_buf[INV_BUFSIZ];
+#endif
+
+static UText* regextst_openUTF8FromInvariant(UText *ut, const char *inv, int64_t length, UErrorCode *status) {
+  if(length==-1) length=strlen(inv);
+#if U_CHARSET_FAMILY==U_ASCII_FAMILY
+  inv_next+=length;
+  return utext_openUTF8(ut, inv, length, status);
+#else
+  if(inv_next+length+1>INV_BUFSIZ) {
+    fprintf(stderr, "%s:%d Error: INV_BUFSIZ #defined to be %d but needs to be at least %d.\n",
+            __FILE__, __LINE__, INV_BUFSIZ, (inv_next+length+1));
+    *status = U_MEMORY_ALLOCATION_ERROR;
+    return NULL;
+  }
+
+  unsigned char *buf = (unsigned char*)inv_buf+inv_next;
+  uprv_aestrncpy(buf, (const uint8_t*)inv, length);
+  inv_next+=length;
+
+#if 0
+  fprintf(stderr, " Note: INV_BUFSIZ at %d, used=%d\n", INV_BUFSIZ, inv_next);
+#endif
+
+  return utext_openUTF8(ut, (const char*)buf, length, status);
+#endif
+}
 
 
 //---------------------------------------------------------------------------
@@ -485,8 +576,13 @@ void RegexTest::Basic() {
         // REGEX_TESTLM("a\N{LATIN SMALL LETTER B}c", "abc", FALSE, FALSE);
         UParseError pe;
         UErrorCode  status = U_ZERO_ERROR;
-        RegexPattern::compile("^(?:a?b?)*$", 0, pe, status);
-        // REGEX_FIND("(?>(abc{2,4}?))(c*)", "<0>ab<1>cc</1><2>ccc</2></0>ddd");
+        RegexPattern *pattern;
+        pattern = RegexPattern::compile(UNICODE_STRING_SIMPLE("a\\u00dfx").unescape(), UREGEX_CASE_INSENSITIVE, pe, status);
+        RegexPatternDump(pattern);
+        RegexMatcher *m = pattern->matcher(UNICODE_STRING_SIMPLE("a\\u00dfxzzz").unescape(), status);
+        UBool result = m->find();
+        printf("result = %d\n", result);
+        // REGEX_FIND("", "<0>ab<1>cc</1><2>ccc</2></0>ddd");
         // REGEX_FIND("(X([abc=X]+)+X)|(y[abc=]+)", "=XX====================");
     }
     exit(1);
@@ -2965,11 +3061,11 @@ void RegexTest::API_Pattern_UTF8() {
     REGEX_ASSERT(pat1->pattern() == "");
     REGEX_ASSERT_UTEXT_UTF8("", pat1->patternText(status));
     delete pat1;
-
-    regextst_openUTF8FromInvariant(&re1, "(Hello, world)*", -1, &status);
+    const char *helloWorldInvariant = "(Hello, world)*";
+    regextst_openUTF8FromInvariant(&re1, helloWorldInvariant, -1, &status);
     pat1 = RegexPattern::compile(&re1, pe, status);
     REGEX_CHECK_STATUS;
-    REGEX_ASSERT(pat1->pattern() == "(Hello, world)*");
+    REGEX_ASSERT_UNISTR(pat1->pattern(),"(Hello, world)*");
     REGEX_ASSERT_UTEXT_INVARIANT("(Hello, world)*", pat1->patternText(status));
     delete pat1;
 
@@ -3027,7 +3123,7 @@ void RegexTest::Extended() {
 
     RegexMatcher    quotedStuffMat(UNICODE_STRING_SIMPLE("\\s*([\\'\\\"/])(.*?)\\1"), 0, status);
     RegexMatcher    commentMat    (UNICODE_STRING_SIMPLE("\\s*(#.*)?$"), 0, status);
-    RegexMatcher    flagsMat      (UNICODE_STRING_SIMPLE("\\s*([ixsmdteDEGLMvabtyYzZ2-9]*)([:letter:]*)"), 0, status);
+    RegexMatcher    flagsMat      (UNICODE_STRING_SIMPLE("\\s*([ixsmdteDEGLMQvabtyYzZ2-9]*)([:letter:]*)"), 0, status);
 
     RegexMatcher    lineMat(UNICODE_STRING_SIMPLE("(.*?)\\r?\\n"), testString, 0, status);
     UnicodeString   testPattern;   // The pattern for test from the test file.
@@ -3236,6 +3332,9 @@ void RegexTest::regex_find(const UnicodeString &pattern,
     }
     if (flags.indexOf((UChar)0x44) >= 0) { // 'D' flag
         bflags |= UREGEX_UNIX_LINES;
+    }
+    if (flags.indexOf((UChar)0x51) >= 0) { // 'Q' flag
+        bflags |= UREGEX_LITERAL;
     }
 
 
@@ -4845,14 +4944,14 @@ void RegexTest::PreAllocatedUTextCAPI () {
         REGEX_ASSERT(resultText == &bufferText);
         utext_setNativeIndex(resultText, 0);
         utext_setNativeIndex(&text1, 0);
-        REGEX_ASSERT(utext_compare(resultText, -1, &text1, -1) == 0);
+        REGEX_ASSERT(testUTextEqual(resultText, &text1));
         
         resultText = uregex_getUText(re, &bufferText, &status);
         REGEX_CHECK_STATUS;
         REGEX_ASSERT(resultText == &bufferText);
         utext_setNativeIndex(resultText, 0);
         utext_setNativeIndex(&text1, 0);
-        REGEX_ASSERT(utext_compare(resultText, -1, &text1, -1) == 0);
+        REGEX_ASSERT(testUTextEqual(resultText, &text1));
 
         /* Then set a UChar * */
         uregex_setText(re, text2Chars, 7, &status);
@@ -4861,7 +4960,7 @@ void RegexTest::PreAllocatedUTextCAPI () {
         REGEX_ASSERT(resultText == &bufferText);
         utext_setNativeIndex(resultText, 0);
         utext_setNativeIndex(&text2, 0);
-        REGEX_ASSERT(utext_compare(resultText, -1, &text2, -1) == 0);
+        REGEX_ASSERT(testUTextEqual(resultText, &text2));
         
         uregex_close(re);
         utext_close(&text1);
@@ -5088,5 +5187,43 @@ void RegexTest::Bug7029() {
     REGEX_ASSERT(numFields == 8);
     delete pMatcher;
 }
+
+// Bug 9283
+//   This test is checking for the existance of any supplemental characters that case-fold
+//   to a bmp character.  
+//
+//   At the time of this writing there are none. If any should appear in a subsequent release 
+//   of Unicode, the code in regular expressions compilation that determines the longest 
+//   posssible match for a literal string  will need to be enhanced.  
+//
+//   See file regexcmp.cpp, case URX_STRING_I in RegexCompile::maxMatchLength()
+//   for details on what to do in case of a failure of this test.
+//
+void RegexTest::Bug9283() {
+    UErrorCode status = U_ZERO_ERROR;
+    UnicodeSet supplementalsWithCaseFolding("[[:CWCF:]&[\\U00010000-\\U0010FFFF]]", status);
+    REGEX_CHECK_STATUS;
+    int32_t index;
+    UChar32 c;
+    for (index=0; ; index++) {
+        c = supplementalsWithCaseFolding.charAt(index);
+        if (c == -1) {
+            break;
+        }
+        UnicodeString cf = UnicodeString(c).foldCase();
+        REGEX_ASSERT(cf.length() >= 2);
+    }
+}
+
+
+void RegexTest::CheckInvBufSize() {
+  if(inv_next>=INV_BUFSIZ) {
+    errln("%s: increase #define of INV_BUFSIZ ( is %d but needs to be at least %d )\n",
+          __FILE__, INV_BUFSIZ, inv_next);
+  } else {
+    logln("%s: INV_BUFSIZ is %d, usage %d\n", __FILE__, INV_BUFSIZ, inv_next);
+  }
+}
+
 #endif  /* !UCONFIG_NO_REGULAR_EXPRESSIONS  */
 

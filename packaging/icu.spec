@@ -1,12 +1,12 @@
 Name:      icu
-Version:   4.8
+Version:   51
 Release:   1
 Summary:   International Components for Unicode
 Group:     Development/Tools
-License:   ICU
+License:   ICU and Unicode-TOU
 URL:       http://www.icu-project.org/
 Source0:   %{name}-%{version}.tar.gz
-Patch0:    hack-atomics.diff
+Source1:   %{name}.manifest
 BuildRequires: doxygen, autoconf
 
 %description
@@ -39,7 +39,7 @@ Includes and definitions for developing with icu.
 
 %prep
 %setup -q
-%patch0 -p1
+cp %{SOURCE1} lib%{name}.manifest
 
 %build
 %reconfigure ./runConfigureICU Linux --disable-renaming --prefix=%{_prefix}
@@ -51,6 +51,9 @@ make DESTDIR=%{buildroot} install
 
 # bugs of rpmdeps
 chmod +x %{buildroot}/%{_libdir}/lib*.so.*
+
+mkdir -p %{buildroot}/usr/share/license
+cp -f LICENSE %{buildroot}/usr/share/license/lib%{name}
 
 %remove_docs
 
@@ -64,12 +67,14 @@ rm -rf $RPM_BUILD_ROOT
 %files
 
 %files -n lib%{name}
+%manifest lib%{name}.manifest
 %{_libdir}/*.so*
 %{_bindir}/derb
 %{_bindir}/genbrk
 %{_bindir}/gencfu
 %{_bindir}/gencnval
-%{_bindir}/genctd
+#%{_bindir}/genctd
+%{_bindir}/gendict
 %{_bindir}/genrb
 %{_bindir}/makeconv
 %{_bindir}/pkgdata
@@ -77,11 +82,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/icuinfo
 %{_bindir}/icu-config
 %{_sbindir}/*
-%dir /usr/share/icu/4.8.1
-/usr/share/icu/4.8.1/config/mh-linux
-/usr/share/icu/4.8.1/install-sh
-/usr/share/icu/4.8.1/license.html
-/usr/share/icu/4.8.1/mkinstalldirs
+%dir /usr/share/icu/51.1
+/usr/share/icu/51.1/config/mh-linux
+/usr/share/icu/51.1/install-sh
+/usr/share/icu/51.1/license.html
+/usr/share/icu/51.1/mkinstalldirs
+/usr/share/license/lib%{name}
 
 %files -n lib%{name}-devel
 %{_includedir}/layout
@@ -89,3 +95,4 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/icu-*.pc
 %{_libdir}/%{name}
+#/usr/share/license/lib%{name}
