@@ -13,6 +13,7 @@
 		<filesystem path="/usr/bin/makeconv" label="_" exec_label="none" />
 		<filesystem path="/usr/bin/pkgdata" label="_" exec_label="none" />
 		<filesystem path="/usr/bin/uconv" label="_" exec_label="none" />
+		<filesystem path="/usr/bin/gendict" label="_" exec_label="none" />
 		<filesystem path="/usr/sbin/genccode" label="_" exec_label="none" />
 		<filesystem path="/usr/sbin/gencmn" label="_" exec_label="none" />
 		<filesystem path="/usr/sbin/gennorm2" label="_" exec_label="none" />

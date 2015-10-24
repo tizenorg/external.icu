@@ -190,8 +190,8 @@ pt_PT{
         }
         gregorian{
             AmPmMarkers{
-                "AM",
-                "PM",
+                "a.m.",
+                "p.m.",
             }
             DateTimePatterns{
                 "HH:mm:ss zzzz",

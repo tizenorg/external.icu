@@ -45,8 +45,8 @@ eo{
         }
         gregorian{
             AmPmMarkers{
-                "AM",
-                "PM",
+                "atm",
+                "ptm",
             }
             DateTimePatterns{
                 "H-'a' 'horo' 'kaj' m:ss zzzz",

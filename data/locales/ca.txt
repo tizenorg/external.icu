@@ -545,8 +545,8 @@ ca{
         }
         gregorian{
             AmPmMarkers{
-                "AM",
-                "PM",
+                "a.m.",
+                "p.m.",
             }
             DateTimePatterns{
                 "H.mm.ss zzzz",

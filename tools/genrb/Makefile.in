@@ -30,7 +30,8 @@ CLEANFILES = *~ $(MAN_FILES) $(DEPS) $(DERB_DEPS)
 TARGET = $(BINDIR)/$(TARGET_STUB_NAME)$(EXEEXT)
 DERB = $(BINDIR)/$(DERB_STUB_NAME)$(EXEEXT)
 
-CPPFLAGS += -I$(top_srcdir)/common -I$(top_srcdir)/i18n -I$(srcdir)/../toolutil
+CPPFLAGS += -fPIE -I$(top_srcdir)/common -I$(top_srcdir)/i18n -I$(srcdir)/../toolutil
+LDFLAGS += -pie
 LIBS = $(LIBICUTOOLUTIL) $(LIBICUI18N) $(LIBICUUC) $(DEFAULT_LIBS) $(LIB_M)
 
 OBJECTS = errmsg.o genrb.o parse.o read.o reslist.o ustr.o rbutil.o \
@@ -87,9 +88,15 @@ $(TARGET) : $(OBJECTS)
 	$(LINK.cc) $(OUTOPT)$@ $^ $(LIBS) 
 	$(POST_BUILD_STEP)
 
+genrb.o: genrb.c
+	gcc $(CPPFLAGS) -c genrb.c $(LIBS)
+
 $(DERB) : $(DERB_OBJ)
 	$(LINK.cc) $(OUTOPT)$@ $^ $(LIBS)
 	$(POST_BUILD_STEP)
+
+derb.o: derb.c
+	gcc $(CPPFLAGS) -c derb.c $(LIBS)
 
 # This line is needed to serialize builds when the gmake -j option is used.
 $(TARGET_STUB_NAME).$(SECTION): $(DERB_STUB_NAME).$(SECTION)

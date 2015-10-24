@@ -399,8 +399,8 @@ en_GB{
         }
         gregorian{
             AmPmMarkers{
-                "AM",
-                "PM",
+                "a.m.",
+                "p.m.",
             }
             DateTimePatterns{
                 "HH:mm:ss zzzz",
@@ -663,7 +663,7 @@ en_GB{
     }
     fields{
         dayperiod{
-            dn{"am/pm"}
+            dn{"a.m./p.m."}
         }
     }
     listPattern{

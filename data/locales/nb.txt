@@ -300,8 +300,8 @@ nb{
         }
         gregorian{
             AmPmMarkers{
-                "AM",
-                "PM",
+                "a.m.",
+                "p.m.",
             }
             DateTimePatterns{
                 "'kl'. HH:mm:ss zzzz",

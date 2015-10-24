@@ -66,8 +66,8 @@ luy{
         }
         gregorian{
             AmPmMarkers{
-                "AM",
-                "PM",
+                "a.m.",
+                "p.m.",
             }
             DateTimePatterns{
                 "h:mm:ss a zzzz",
